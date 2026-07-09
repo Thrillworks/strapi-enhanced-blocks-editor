@@ -1,8 +1,11 @@
+import * as yup from 'yup';
 import { PLUGIN_ID } from './pluginId';
 import { Initializer } from './components/Initializer';
 import { PluginIcon } from './components/PluginIcon';
 import { EmbeddedEntryTypesSelect } from './components/EmbeddedEntryTypesSelect';
 import { getTranslation } from './utils/getTranslation';
+import { parseEmbeddedEntryBlockTypes } from './utils/contentTypes';
+
 function registerEmbeddedEntryTypesSelect(getPlugin: (pluginId: string) => any) {
   const components = getPlugin('content-type-builder')?.apis?.forms?.components;
 
@@ -74,10 +77,11 @@ export default {
                 description: {
                   id: getTranslation('plugin.options.advanced.embeds.description'),
                   defaultMessage:
-                    'Choose which collection types authors can embed. At least one type must remain selected.',
+                    'Choose which collection types authors can embed. At least one type is required when embedded entries are allowed.',
                 },
                 name: 'options.embedded-entry-block-types' as any,
                 type: 'embedded-entry-types-select' as any,
+                size: 12,
               },
               {
                 intlLabel: {
@@ -91,6 +95,7 @@ export default {
                 name: 'options.enable_embedded_entry_data_in_response' as any,
                 type: 'checkbox',
                 defaultValue: true,
+                size: 12,
               },
             ],
           },
@@ -127,6 +132,27 @@ export default {
             ],
           },
         ],
+        validator: () => ({
+          'embedded-entry-block-types': yup
+            .mixed()
+            .test(
+              'at-least-one-when-allowed',
+              {
+                id: getTranslation('plugin.options.advanced.embeds.validation.min'),
+                defaultMessage:
+                  'Select at least one collection type when embedded entries are allowed.',
+              },
+              function (value) {
+                const allowEmbeddedEntries = this.parent?.allow_embedded_entries ?? true;
+                if (!allowEmbeddedEntries) {
+                  return true;
+                }
+
+                return parseEmbeddedEntryBlockTypes(value as string | string[] | null | undefined)
+                  .length > 0;
+              },
+            ),
+        }),
       },
     });
   },

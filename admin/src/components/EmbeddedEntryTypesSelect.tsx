@@ -7,7 +7,7 @@ import {
   Tag,
   Typography,
 } from '@strapi/design-system';
-import { Cross } from '@strapi/icons';
+import { CaretDown, Cross } from '@strapi/icons';
 import { useFetchClient } from '@strapi/strapi/admin';
 import React from 'react';
 import { useIntl } from 'react-intl';
@@ -23,6 +23,7 @@ const SelectedContent = styled(Flex)`
   min-width: 0;
   align-items: center;
   gap: ${({ theme }: { theme: any }) => theme.spaces[1]};
+  pointer-events: none;
 `;
 
 // ~2 rows of 3.2rem tags + gaps; keeps the trigger compact so the dropdown
@@ -48,9 +49,17 @@ const TruncatedTag = styled(Tag)`
     white-space: nowrap;
     min-width: 0;
   }
+
+  /* Keep only the remove (X) button interactive. */
+  & > button {
+    pointer-events: auto;
+  }
 `;
 
 const OverflowIndicator = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: ${({ theme }: { theme: any }) => theme.spaces[1]};
   flex-shrink: 0;
   white-space: nowrap;
   font-size: 1.2rem;
@@ -58,24 +67,27 @@ const OverflowIndicator = styled.span`
   line-height: 1;
   color: ${({ theme }: { theme: any }) => theme.colors.neutral600};
   padding-inline: ${({ theme }: { theme: any }) => theme.spaces[1]};
+
+  svg {
+    width: 0.7rem;
+    height: 0.7rem;
+  }
 `;
 
 interface SelectedTagsDisplayProps {
   selectedValues: string[];
   getDisplayName: (uid: string) => string;
-  isDisabled: boolean;
   onRemove: (uid: string) => (event: React.MouseEvent) => void;
   removeLabel: (name: string) => string;
-  moreLabel: string;
+  totalLabel: string;
 }
 
 const SelectedTagsDisplay = ({
   selectedValues,
   getDisplayName,
-  isDisabled,
   onRemove,
   removeLabel,
-  moreLabel,
+  totalLabel,
 }: SelectedTagsDisplayProps) => {
   const tagsRef = React.useRef<HTMLDivElement>(null);
   const [isOverflowing, setIsOverflowing] = React.useState(false);
@@ -106,7 +118,6 @@ const SelectedTagsDisplay = ({
             <TruncatedTag
               key={uid}
               tabIndex={-1}
-              disabled={isDisabled || selectedValues.length <= 1}
               label={removeLabel(displayName)}
               icon={<Cross width={`${14 / 16}rem`} height={`${14 / 16}rem`} />}
               onClick={onRemove(uid)}
@@ -117,7 +128,9 @@ const SelectedTagsDisplay = ({
         })}
       </TagsContainer>
       {isOverflowing && (
-        <OverflowIndicator aria-label={moreLabel}>{moreLabel}</OverflowIndicator>
+        <OverflowIndicator aria-label={totalLabel}>
+          {totalLabel}
+        </OverflowIndicator>
       )}
     </SelectedContent>
   );
@@ -288,12 +301,6 @@ export const EmbeddedEntryTypesSelect = ({
   );
 
   const handleChange = (values: string[]) => {
-    // Keep at least one type selected. An empty list would make the
-    // "Allow embedded entries" checkbox meaningless.
-    if (values.length === 0) {
-      return;
-    }
-
     setUserHasChanged(true);
     onChange({
       target: {
@@ -307,11 +314,6 @@ export const EmbeddedEntryTypesSelect = ({
   const handleRemoveTag = (uidToRemove: string) => (event: React.MouseEvent) => {
     event.preventDefault();
     event.stopPropagation();
-
-    if (selectedValues.length <= 1) {
-      return;
-    }
-
     handleChange(selectedValues.filter((uid) => uid !== uidToRemove));
   };
 
@@ -327,7 +329,6 @@ export const EmbeddedEntryTypesSelect = ({
       <SelectedTagsDisplay
         selectedValues={selectedValues}
         getDisplayName={getDisplayName}
-        isDisabled={isDisabled}
         onRemove={handleRemoveTag}
         removeLabel={(displayName) =>
           formatMessage(
@@ -338,10 +339,13 @@ export const EmbeddedEntryTypesSelect = ({
             { name: displayName },
           )
         }
-        moreLabel={formatMessage({
-          id: 'enhanced-blocks-editor.embeddedEntryTypesSelect.more',
-          defaultMessage: 'more…',
-        })}
+        totalLabel={formatMessage(
+          {
+            id: 'enhanced-blocks-editor.embeddedEntryTypesSelect.total',
+            defaultMessage: '{count} total',
+          },
+          { count: selectedValues.length },
+        )}
       />
     );
   };
