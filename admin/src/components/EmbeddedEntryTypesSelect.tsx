@@ -7,7 +7,7 @@ import {
   Tag,
   Typography,
 } from '@strapi/design-system';
-import { CaretDown, Cross } from '@strapi/icons';
+import { Cross } from '@strapi/icons';
 import { useFetchClient } from '@strapi/strapi/admin';
 import React from 'react';
 import { useIntl } from 'react-intl';
