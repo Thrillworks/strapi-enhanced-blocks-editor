@@ -2,15 +2,13 @@ name: Release
 
 # Publishes @thrillworksinc/strapi-enhanced-blocks-editor to npm when a GitHub Release is published.
 #
-# Auth is npm Trusted Publishing (OIDC) — there is deliberately NO npm token in this workflow.
-# It requires a one-time setup on npmjs.com: the package's Settings → Trusted Publisher, pointing at
-# this repo + this workflow file. npm >= 11.5.1 then authenticates via the OIDC token below and
-# attaches build provenance automatically.
+# Auth: an npm granular access token (the thrillworksteam account) stored as the NPM_TOKEN Actions
+# secret. This is the INTERIM approach — npm's web-UI security-key 2FA for OIDC "trusted publisher"
+# setup wasn't completing. When that's sorted, switch to OIDC: add `permissions: id-token: write`,
+# drop `registry-url`/`NODE_AUTH_TOKEN`, and configure the trusted publisher on npmjs.com.
+# See docs.npmjs.com/trusted-publishers.
 #
-# Do NOT add NODE_AUTH_TOKEN / an _authToken .npmrc — npm would fall back to the legacy token path
-# and ignore OIDC. See docs.npmjs.com/trusted-publishers.
-#
-# Release flow: bump the version, tag it, and publish a GitHub Release → this runs and publishes.
+# Release flow: bump the version, tag it, publish a GitHub Release → this runs and publishes.
 
 on:
   release:
@@ -18,7 +16,6 @@ on:
 
 permissions:
   contents: read
-  id-token: write # required for npm OIDC trusted publishing
 
 jobs:
   publish:
@@ -28,7 +25,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: npm install -g npm@latest # ensure npm >= 11.5.1 (OIDC trusted publishing)
-      - run: npm ci
+          registry-url: https://registry.npmjs.org
+      - run: npm install --no-audit --no-fund
       - run: npm run build
-      - run: npm publish
+      - run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
