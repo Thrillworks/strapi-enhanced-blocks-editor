@@ -10,7 +10,7 @@ import { styled, css } from 'styled-components';
 import { ItemTypes } from './constants/dragAndDrop.mjs';
 import { DIRECTIONS, useDragAndDrop } from './hooks/useDragAndDrop.mjs';
 import { getTranslation } from '../utils/getTranslation';
-import { decorateCode } from './Blocks/Code.mjs';
+import { decorateCode } from './blocks/Code.mjs';
 import { useBlocksEditorContext } from './BlocksEditor.mjs';
 import { useConversionModal } from './BlocksToolbar.mjs';
 import { getEntries } from './utils/types.mjs';
