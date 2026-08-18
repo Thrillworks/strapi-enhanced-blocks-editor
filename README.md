@@ -11,7 +11,7 @@ A Strapi plugin that extends the native Blocks editor with embedded entry suppor
 
 ## Requirements
 
-- Strapi **5.x**
+- Strapi **>= 5.27.0**
 - Node.js **>= 20**
 
 ## Installation
