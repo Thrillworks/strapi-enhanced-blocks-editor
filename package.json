@@ -56,8 +56,12 @@
   },
   "peerDependencies": {
     "@strapi/strapi": "^5.27.0",
+    "@strapi/admin": "^5.27.0",
+    "@strapi/design-system": "^2.0.0-rc.0",
+    "@strapi/icons": "^2.0.0-rc.0",
     "react": "^17.0.0 || ^18.0.0",
     "react-dom": "^17.0.0 || ^18.0.0",
+    "react-intl": "^6.0.0",
     "react-router-dom": "^6.30.3",
     "styled-components": "^6.0.0"
   },
