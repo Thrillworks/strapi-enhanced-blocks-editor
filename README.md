@@ -148,6 +148,10 @@ Without a custom `embedded-entry` block, `@strapi/blocks-react-renderer` logs a 
 ### Future Enhancements
 - **Configure blocks visibility** - Add configuration option that will allow hiding of block level elements like bold, italic, Heading 1 etc.
 
+## Reporting issues
+
+If you find a bug or have a feature request, open an issue on [GitHub](https://github.com/Thrillworks/strapi-enhanced-blocks-editor/issues). Include steps to reproduce, expected vs. actual behavior, and your Strapi and plugin versions when reporting a bug.
+
 ## License
 
 MIT
