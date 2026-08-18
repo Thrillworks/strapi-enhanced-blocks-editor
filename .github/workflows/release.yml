@@ -1,0 +1,33 @@
+name: Release
+
+# Publishes @thrillworksinc/strapi-enhanced-blocks-editor to npm when a GitHub Release is published.
+#
+# Auth: an npm granular access token (the thrillworksteam account) stored as the NPM_TOKEN Actions
+# secret. This is the INTERIM approach — npm's web-UI security-key 2FA for OIDC "trusted publisher"
+# setup wasn't completing. When that's sorted, switch to OIDC: add `permissions: id-token: write`,
+# drop `registry-url`/`NODE_AUTH_TOKEN`, and configure the trusted publisher on npmjs.com.
+# See docs.npmjs.com/trusted-publishers.
+#
+# Release flow: bump the version, tag it, publish a GitHub Release → this runs and publishes.
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+      - run: npm install --no-audit --no-fund
+      - run: npm run build
+      - run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
