@@ -55,21 +55,11 @@
     "yup": "^0.32.9"
   },
   "peerDependencies": {
-    "react-dnd": "^16.0.1",
-    "react-dnd-html5-backend": "^16.0.1",
-    "@strapi/admin": "^5.48.0",
-    "@strapi/design-system": "^2.2.0",
-    "@strapi/icons": "^2.2.0",
-    "@strapi/sdk-plugin": "^6.1.1",
-    "@strapi/strapi": "^5.48.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-intl": "^6.8.9",
-    "react-router-dom": "^6.30.4",
-    "slate": "^0.94.1",
-    "slate-history": "^0.93.0",
-    "slate-react": "^0.98.3",
-    "styled-components": "^6.4.2"
+    "@strapi/strapi": "^5.0.0",
+    "react": "^17.0.0 || ^18.0.0",
+    "react-dom": "^17.0.0 || ^18.0.0",
+    "react-router-dom": "^6.30.3",
+    "styled-components": "^6.0.0"
   },
   "strapi": {
     "kind": "plugin",

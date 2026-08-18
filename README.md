@@ -26,6 +26,16 @@ npm install @thrillworksinc/strapi-enhanced-blocks-editor
 yarn add @thrillworksinc/strapi-enhanced-blocks-editor
 ```
 
+Enable the plugin in `config/plugins.ts`. If the file already exists, add this entry alongside your other plugins:
+
+```ts
+export default {
+  'enhanced-blocks-editor': {
+    enabled: true,
+  },
+};
+```
+
 Rebuild the admin panel so the plugin is registered:
 
 ```bash
